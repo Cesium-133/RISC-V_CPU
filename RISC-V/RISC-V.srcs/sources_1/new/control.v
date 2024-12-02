@@ -73,12 +73,12 @@ module control (
             end
             7'b1101111: begin // JAL instruction
                 regwrite = 1;
-                aluop = 2'b01;
+                aluop = 2'b11;
                 pc_rs1_sel = 0; // Select PC for jump address
             end
             7'b1100111: begin // JALR instruction
                 regwrite = 1;
-                aluop = 2'b01;
+                aluop = 2'b11;
                 pc_rs1_sel = 1; // Select RS1 for jump address
             end
             default: begin

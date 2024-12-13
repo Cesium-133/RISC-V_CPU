@@ -26,7 +26,7 @@ module pc(
     input wire PC_sel,
     input wire PC_hold,
     input wire [31:0] Add_2_out,
-    output reg [31:0] Read_address //pcµÄÊä³öĞÅºÅ
+    output reg [12:0] Read_address //pcÂµÃ„ÃŠÃ¤Â³Ã¶ÃÃ…ÂºÃ…
     );
 
     always @(posedge clk or posedge rst) begin
@@ -40,7 +40,7 @@ module pc(
             Read_address <= Add_2_out;
         end
         else begin
-            Read_address <= Read_address + 4;
+            Read_address <= Read_address + 1;
         end
     end
 endmodule

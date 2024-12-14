@@ -19,8 +19,8 @@
 `define AUIPC 5'd19 //立即数与pc相加
 
 module ALU_Control (
-    input [2:0] func3,
-    input func7,
+    input [2:0] funct3,
+    input funct7,
     input [2:0] aluop,
     output reg [4:0] ALU_ctrl
 );
@@ -28,20 +28,19 @@ module ALU_Control (
 
     always @(*) begin
         casez ({
-            aluop, func3
+            aluop, funct3
         })
             6'b010_000: begin
-                if (!func7) ALU_ctrl = `ADD;
+                if (!funct7) ALU_ctrl = `ADD;
                 else ALU_ctrl = `SUB;
             end
             6'b000_???: ALU_ctrl = `ADD;
             6'b010_100: ALU_ctrl = `XOR;
             6'b010_110: ALU_ctrl = `OR;
             6'b010_111: ALU_ctrl = `AND;
-            6'b010_100: ALU_ctrl = `XOR;
             6'b010_001: ALU_ctrl = `SLL;
             6'b010_101: begin
-                if (!func7) ALU_ctrl = `SRL;
+                if (!funct7) ALU_ctrl = `SRL;
                 else ALU_ctrl = `SRA;
             end
             6'b010_010: ALU_ctrl = `SLT;

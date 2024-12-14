@@ -1,0 +1,119 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0x0",
+      "device": "xc7a35tcpg236-1",
+      "name": "design_1",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2019.2"
+    },
+    "design_tree": {
+      "ADD2_0": "",
+      "Hazard_Detection_For_0": ""
+    },
+    "components": {
+      "ADD2_0": {
+        "vlnv": "xilinx.com:module_ref:ADD2:1.0",
+        "xci_name": "design_1_ADD2_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "ADD2",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "add2_address": {
+            "direction": "I",
+            "left": "12",
+            "right": "0"
+          },
+          "imm": {
+            "direction": "I",
+            "left": "12",
+            "right": "0"
+          },
+          "jump_address": {
+            "direction": "O",
+            "left": "12",
+            "right": "0"
+          }
+        }
+      },
+      "Hazard_Detection_For_0": {
+        "vlnv": "xilinx.com:module_ref:Hazard_Detection_Forwarding_unit:1.0",
+        "xci_name": "design_1_Hazard_Detection_For_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "Hazard_Detection_Forwarding_unit",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "EX_MEM_RegWrite": {
+            "direction": "I"
+          },
+          "MEM_WB_RegWrite": {
+            "direction": "I"
+          },
+          "EX_MEM_RD": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "MEM_WB_RD": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "ID_EX_RS1": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "ID_EX_RS2": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "ID_EX_RD": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "IF_ID_RS1": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "IF_ID_RS2": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "ID_EX_MemRead": {
+            "direction": "I",
+            "left": "4",
+            "right": "0"
+          },
+          "IF_ID_hold": {
+            "direction": "O"
+          },
+          "PC_hold": {
+            "direction": "O"
+          },
+          "ID_EX_clear": {
+            "direction": "O"
+          },
+          "Forward_A": {
+            "direction": "O",
+            "left": "1",
+            "right": "0"
+          },
+          "Forward_B": {
+            "direction": "O",
+            "left": "1",
+            "right": "0"
+          }
+        }
+      }
+    }
+  }
+}

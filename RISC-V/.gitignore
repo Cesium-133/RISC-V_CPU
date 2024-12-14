@@ -1,0 +1,23 @@
+# Except for the following directories and files
+!*.srcs/
+!*.constraints/
+!*.xpr
+!*.xdc
+!README.*
+
+# Ignore build and synthesis directories
+/implementation/
+/synthesis/
+/*.sim/
+/*.runs/
+/*.ip_user_files/
+/*.cache/
+/*.hw/
+
+# Ignore Vivado generated logs and temporary files
+*.jou
+*.log
+*.tcl
+*.wdb
+*.bak
+*.bak2

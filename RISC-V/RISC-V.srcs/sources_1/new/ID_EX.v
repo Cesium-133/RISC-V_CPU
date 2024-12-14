@@ -34,7 +34,6 @@ module ID_EX (
     output reg [4:0] ID_EX_rs2,
     output reg [3:0] func_EX,
     output reg [4:0] ID_EX_rd
-
 );
     always @(posedge clk) begin
         if (ID_EX_clr) begin

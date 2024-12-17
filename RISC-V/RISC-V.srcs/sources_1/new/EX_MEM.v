@@ -5,7 +5,7 @@ module EX_MEM (
     input regwrite_EX,
     input memread_EX,
     input memwrite_EX,
-    input memop_EX,
+    input [2:0] memop_EX,
     input [31:0] alu_out_EX,
     input [31:0] rs2_EX,
     input [4:0] ID_EX_rd,
@@ -13,7 +13,7 @@ module EX_MEM (
     output reg regwrite_MEM,
     output reg memread_MEM,
     output reg memwrite_MEM,
-    output reg memop_MEM,
+    output reg [2:0] memop_MEM,
     output reg [31:0] alu_out_MEM,
     output reg [31:0] rs2_MEM,
     output reg [4:0] EX_MEM_rd

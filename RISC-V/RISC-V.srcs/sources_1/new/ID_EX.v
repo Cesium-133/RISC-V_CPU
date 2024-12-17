@@ -1,14 +1,15 @@
 module ID_EX (
     input clk,
+    input rst,
     input memtoreg_ID,
     input regwrite_ID,
     input memread_ID,
     input memwrite_ID,
-    input memop_ID,
+    input [2:0] memop_ID,
     input [2:0] aluop_ID,
     input alusrc_ID,
     input pc_rs1_sel_ID,
-    input [12:0] pc_ID,
+    input [31:0] pc_ID,
     input [31:0] rs1_ID,
     input [31:0] rs2_ID,
     input [31:0] imm_ID,
@@ -22,11 +23,11 @@ module ID_EX (
     output reg regwrite_EX,
     output reg memread_EX,
     output reg memwrite_EX,
-    output reg memop_EX,
+    output reg [2:0] memop_EX,
     output reg [2:0] aluop_EX,
     output reg alusrc_EX,
     output reg pc_rs1_sel_EX,
-    output reg [12:0] pc_EX,
+    output reg [31:0] pc_EX,
     output reg [31:0] rs1_EX,
     output reg [31:0] rs2_EX,
     output reg [31:0] imm_EX,
@@ -35,8 +36,13 @@ module ID_EX (
     output reg [3:0] func_EX,
     output reg [4:0] ID_EX_rd
 );
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            memread_EX <= 0;
+            memwrite_EX <= 0;
+            memop_EX <= 0;
+        end
+        else if (ID_EX_clr) begin
             memread_EX <= 0;
             memwrite_EX <= 0;
             memop_EX <= 0;
@@ -47,8 +53,12 @@ module ID_EX (
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            memtoreg_EX <= 0;
+            regwrite_EX <= 0;
+        end
+        else if (ID_EX_clr) begin
             memtoreg_EX <= 0;
             regwrite_EX <= 0;
         end else begin
@@ -57,8 +67,13 @@ module ID_EX (
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            aluop_EX <= 0;
+            alusrc_EX <= 0;
+            pc_rs1_sel_EX <= 0;
+        end
+        else if (ID_EX_clr) begin
             aluop_EX <= 0;
             alusrc_EX <= 0;
             pc_rs1_sel_EX <= 0;
@@ -69,16 +84,24 @@ module ID_EX (
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
-            pc_EX <= 12'd0;
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            pc_EX <= 32'd0;
+        end
+        else if (ID_EX_clr) begin
+            pc_EX <= 32'd0;
         end else begin
             pc_EX <= pc_ID;
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            rs1_EX <= 32'd0;
+            rs2_EX <= 32'd0;
+            imm_EX <= 32'd0;
+        end
+        else if (ID_EX_clr) begin
             rs1_EX <= 32'd0;
             rs2_EX <= 32'd0;
             imm_EX <= 32'd0;
@@ -89,8 +112,13 @@ module ID_EX (
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            ID_EX_rs1 <= 5'd0;
+            ID_EX_rs2 <= 5'd0;
+            ID_EX_rd  <= 5'd0;
+        end
+        else if (ID_EX_clr) begin
             ID_EX_rs1 <= 5'd0;
             ID_EX_rs2 <= 5'd0;
             ID_EX_rd  <= 5'd0;
@@ -101,8 +129,11 @@ module ID_EX (
         end
     end
 
-    always @(posedge clk) begin
-        if (ID_EX_clr) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            func_EX <= 4'd0;
+        end
+        else if (ID_EX_clr) begin
             func_EX <= 4'd0;
         end else begin
             func_EX <= func_ID;

@@ -4,5 +4,4 @@ This is project aiming at developing an CPU based on RISC-V architecture and an 
 
 This project is contributed by Meng, Yu and Wang.
 
-updated 11.28
-1. 
+updated 12.4

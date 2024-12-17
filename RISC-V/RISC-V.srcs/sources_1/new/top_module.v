@@ -20,18 +20,29 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top_module(
+module CPU(
     input clk,
-    input rst
+    input clk1,
+    input rst,
+    //IO to CPU inst bus
+    input wire inst_ram_wen,
+    input wire [31:0] inst_ram_waddr,
+    input wire [31:0] inst_ram_wdata,
+    //IO to MEM
+    input wire ioread_MEM,
+    input wire iowrite_MEM,
+    input wire [31:0] io_addr_MEM,
+    input wire [31:0] io_data_in_MEM,
+    output wire [31:0] io_data_read_MEM
     );
-    // 所有端口的中间变量，注意位宽、大小写和类型
+    // �?有端口的中间变量，注意位宽�?�大小写和类�?
     wire PC_sel;
     wire PC_hold;
     wire [31:0] Add_2_out;
-    wire [12:0] Read_address;
+    wire [31:0] Read_address;
     wire [31:0] instruction_IF;
     wire [31:0] instruction_ID;
-    wire [12:0] pc_ID;
+    wire [31:0] pc_ID;
     wire IF_ID_clear;
     wire IF_ID_hold;
     wire jump;
@@ -42,7 +53,7 @@ module top_module(
     wire memwrite;
     wire [2:0] aluop;
     wire alusrc;
-    wire memop;
+    wire [2:0] memop;
     wire pc_rs1_sel;
     wire [31:0] imm;
     wire [31:0] Write_data;
@@ -53,11 +64,11 @@ module top_module(
     wire regwrite_EX;
     wire memread_EX;
     wire memwrite_EX;
-    wire memop_EX;
+    wire [2:0] memop_EX;
     wire [2:0] aluop_EX;
     wire alusrc_EX;
     wire pc_rs1_sel_EX;
-    wire [12:0] pc_EX;
+    wire [31:0] pc_EX;
     wire [31:0] rs1_EX;
     wire [31:0] rs2_EX;
     wire [31:0] imm_EX;
@@ -69,18 +80,20 @@ module top_module(
     wire [31:0] num1;
     wire [31:0] num2;
     wire [31:0] num2_MUX5;
-    wire [12:0] add2_address;
+    wire [31:0] add2_address;
     wire [31:0] ALU_out;
 
     wire memtoreg_MEM;
     wire regwrite_MEM;
     wire memread_MEM;
     wire memwrite_MEM;
-    wire memop_MEM;
+    wire [2:0] memop_MEM;
+    wire [4:0] EX_MEM_rd;
     wire [31:0] alu_out_MEM;
     wire [31:0] rs2_MEM;
-    wire [4:0] EX_MEM_rd;
     wire [31:0] dataread_MEM;
+    wire [31:0] cpu_data_in_MEM;
+    wire [31:0] cpu_data_read_MEM;
 
     wire memtoreg_WB;
     wire [31:0] dataread_WB;
@@ -101,13 +114,18 @@ module top_module(
     );
 
     blk_mem_gen_0 instruction_memory_inst(
-        .clka(clk),
-        .addra(Read_address),
-        .douta(instruction_IF)
+        .clka(clk1),    // input wire clka
+        .wea(inst_ram_wen),      // input wire [0 : 0] wea
+        .addra(inst_ram_waddr),  // input wire [12 : 0] addra
+        .dina(inst_ram_wdata),    // input wire [31 : 0] dina
+        .clkb(clk1),    // input wire clkb
+        .addrb(Read_address[14:2]),  // input wire [12 : 0] addrb
+        .doutb(instruction_IF)  // output wire [31 : 0] doutb
     );
 
     IF_ID IF_ID_inst(
         .clk(clk),
+        .rst(rst),
         .IFID_clear(IF_ID_clear),
         .IFID_hold(IF_ID_hold),
         .pc_IF(Read_address),
@@ -143,6 +161,7 @@ module top_module(
 
     registers registers_inst(
         .clk(clk),
+        .rst(rst),
         .instruction(instruction_ID),
         .Write_data(Write_data),
         .Write_register(MEM_WB_rd),
@@ -153,6 +172,7 @@ module top_module(
 
     ID_EX ID_EX_inst(
         .clk(clk),
+        .rst(rst),
         .memtoreg_ID(memtoreg),
         .regwrite_ID(regwrite),
         .memread_ID(memread),
@@ -253,6 +273,7 @@ module top_module(
 
     EX_MEM EX_MEM_inst (
         .clk(clk),
+        .rst(rst),
         .memtoreg_EX(memtoreg_EX),
         .regwrite_EX(regwrite_EX),
         .memread_EX(memread_EX),
@@ -272,16 +293,35 @@ module top_module(
     );
 
     blk_mem_gen_1 DATA_MEMORY_inst(
-        .clka(clk),
-        .addra(alu_out_MEM),
-        .douta(dataread_MEM),
-        .dina(rs2_MEM),
-        .wea(memwrite_MEM),
-        .ena(memread_MEM | memwrite_MEM)
+        .clka(clk1),    // input wire clka
+        .ena(memread_MEM | memwrite_MEM),      // input wire ena
+        .wea(memwrite_MEM),      // input wire [0 : 0] wea
+        .addra(alu_out_MEM[14:2]),  // input wire [12 : 0] addra
+        .dina(cpu_data_in_MEM),    // input wire [31 : 0] dina
+        .douta(cpu_data_read_MEM),  // output wire [31 : 0] douta
+        .clkb(clk1),    // input wire clkb
+        .enb(ioread_MEM | iowrite_MEM),      // input wire enb
+        .web(iowrite_MEM),      // input wire [0 : 0] web
+        .addrb(io_addr_MEM[14:2]),  // input wire [12 : 0] addrb
+        .dinb(io_data_in_MEM),    // input wire [31 : 0] dinb
+        .doutb(io_data_read_MEM)  // output wire [31 : 0] doutb
+    );
+
+    mem_operation_read mem_operation_read_inst(
+        .memop_MEM(memop_MEM),
+        .cpu_data_read_MEM(cpu_data_read_MEM),
+        .dataread_MEM(dataread_MEM)
+    );
+
+    mem_operation_write mem_operation_write_inst(
+        .memop_MEM(memop_MEM),
+        .cpu_data_in_MEM(cpu_data_in_MEM),
+        .rs2_MEM(rs2_MEM)
     );
 
     MEM_WB MEM_WB_inst(
         .clk(clk),
+        .rst(rst),
         .memtoreg_MEM(memtoreg_MEM),
         .regwrite_MEM(regwrite_MEM),
         .dataread_MEM(dataread_MEM),

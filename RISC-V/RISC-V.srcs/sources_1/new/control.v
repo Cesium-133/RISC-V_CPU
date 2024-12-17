@@ -43,9 +43,9 @@ module control (
     output reg regwrite,   // Register write enable
     output reg memread,    // Memory read enable
     output reg memwrite,   // Memory write enable
+    output reg [2:0] memop,      // Memory operation (8 situation)
     output reg [2:0] aluop,// ALU operation select
     output reg alusrc,     // ALU source select
-    output reg memop,      // Memory operation (read/write)
     output reg pc_rs1_sel  // Select PC or RS1 for jump instructions
 );
 
@@ -67,12 +67,25 @@ module control (
                 memtoreg = 1;
                 aluop = `OP_MEM;
                 alusrc = 1;
+                case(funct3)
+                    3'b000:memop = 3'b000; // LB
+                    3'b001:memop = 3'b001; // LH
+                    3'b010:memop = 3'b010; // LW
+                    3'b100:memop = 3'b011; // LBU
+                    3'b101:memop = 3'b100; // LHU
+                    default:memop = 3'bx;
+                endcase
             end
             `SW: begin // Store instruction (SW)
                 memwrite = 1;
                 aluop = `OP_MEM;
                 alusrc = 1;
-                memop = 1;
+                case(funct3)
+                    3'b000:memop = 3'b101; // SB
+                    3'b001:memop = 3'b110; // SH
+                    3'b010:memop = 3'b111; // SW
+                    default:memop = 3'bx;
+                endcase
             end
             `BEQ: begin // Branch instructions (BEQ, BNE, etc.)
                 aluop = `OP_BRANCH;

@@ -43,16 +43,16 @@ module seven_segment_display(
     assign thsd = score / 14'd1000;
     // 写一个两位计数器，0显示个位，1显示十位
 
-    parameter sm_0 = 7'b1000000;
-    parameter sm_1 = 7'b1111001;
-    parameter sm_2 = 7'b0100100;
-    parameter sm_3 = 7'b0110000;
-    parameter sm_4 = 7'b0011001;
-    parameter sm_5 = 7'b0010010;
-    parameter sm_6 = 7'b0000010;
-    parameter sm_7 = 7'b1111000;
-    parameter sm_8 = 7'b0000000;
-    parameter sm_9 = 7'b0010000;
+    parameter sm_0 = 7'b0000001; // 0
+    parameter sm_1 = 7'b1001111; // 1
+    parameter sm_2 = 7'b0010010; // 2
+    parameter sm_3 = 7'b0000110; // 3
+    parameter sm_4 = 7'b1001100; // 4
+    parameter sm_5 = 7'b0100100; // 5
+    parameter sm_6 = 7'b0100000; // 6
+    parameter sm_7 = 7'b0001111; // 7
+    parameter sm_8 = 7'b0000000; // 8
+    parameter sm_9 = 7'b0000100; // 9
 
     always @(posedge clk_1000HZ) begin
         if (!rst_n) 
@@ -91,7 +91,7 @@ module seven_segment_display(
                 end
                 default: begin
                     AN = 4'b1110;
-                    disp_seg = 3'b0;
+                    disp_seg = 4'b0;
                 end
             endcase
             case(disp_seg)

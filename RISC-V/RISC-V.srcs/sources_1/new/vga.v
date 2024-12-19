@@ -8,7 +8,7 @@
 module vga (
     input RST,
     input clk,
-    input [194:0] display_num,
+    input [209:0] display_num,
     output reg [11:0] vga,
     output reg H_SYNC,
     output reg V_SYNC
@@ -174,7 +174,7 @@ module vga (
     always @(*) begin  //确定显示数
         if(display_area&&block_vcounter>=10&&block_vcounter<70&&block_hcounter>=20&&block_hcounter<=180)begin
             if (digit == 4) begin
-                case (display_num[15*(block-1)+:15] / 10 / 10 / 10)
+                case (display_num[14*(block-1)+:14] / 10 / 10 / 10)
                     0: vga = 12'hfff;
                     1: vga = num1;
                     2: vga = num2;
@@ -189,9 +189,9 @@ module vga (
                 endcase
             end
             if (digit == 3) begin
-                case (display_num[15*(block-1)+:15] / 10 / 10 % 10)
+                case (display_num[14*(block-1)+:14] / 10 / 10 % 10)
                     0: begin
-                        if (display_num[15*(block-1)+:15] / 10 / 10 / 10 == 0) vga = 12'hfff;
+                        if (display_num[14*(block-1)+:14] / 10 / 10 / 10 == 0) vga = 12'hfff;
                         else vga = num0;
                     end
                     1: vga = num1;
@@ -207,9 +207,9 @@ module vga (
                 endcase
             end
             if (digit == 2) begin
-                case (display_num[15*(block-1)+:15] / 10 % 10)
+                case (display_num[14*(block-1)+:14] / 10 % 10)
                     0: begin
-                        if(display_num[15*(block-1)+:15]/10/10/10==0&&display_num[15*(block-1)+:15]/10/10==0)
+                        if(display_num[14*(block-1)+:14]/10/10/10==0&&display_num[15*(block-1)+:15]/10/10==0)
                             vga = 12'hfff;
                         else vga = num0;
                     end
@@ -225,8 +225,8 @@ module vga (
                     default: vga = 12'h2e4;
                 endcase
             end
-            if (digit == 2) begin
-                case (display_num[15*(block-1)+:15] % 10)
+            if (digit == 1) begin
+                case (display_num[14*(block-1)+:14] % 10)
                     0: vga = num0;
                     1: vga = num1;
                     2: vga = num2;
